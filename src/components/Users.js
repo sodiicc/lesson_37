@@ -1,7 +1,8 @@
 import { Button, Divider, Pagination, Steps } from 'antd'
-import { DropboxOutlined, PoweroffOutlined } from '@ant-design/icons'
-import React, { useEffect, useState } from 'react'
+import { DropboxOutlined, HomeOutlined, PoweroffOutlined } from '@ant-design/icons'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Users() {
   const [loading, setLoading] = useState(false)
@@ -9,6 +10,18 @@ export default function Users() {
   const [page, setPage] = useState(1)
   const pageSize = 7
   const description = 'This is a description'
+
+  const navigate = useNavigate()
+
+  const firstButton = useRef(null)
+  console.log('firstButton', firstButton.current)
+
+  // useState = (defaultValue) => {
+  //   let value = undefined
+
+  //   const setter = (newValue) => {value = newValue} 
+  //   return [value = defaultValue, setter]
+  // }
 
   // useEffect(() => {
   //   getUsers()
@@ -22,11 +35,22 @@ export default function Users() {
     let response = await fetch('https://jsonplaceholder.typicode.com/users')
     const data = await response.json()
     setUsers(data)
+    localStorage.setItem('users', JSON.stringify(data))
     setLoading(false)
+    firstButton.current = users
   }
+
   const onPaginationChange = (page) => {
     setPage(page)
   }
+
+  const onGoHomeClick = () => {
+    navigate('/home')
+  }
+
+  // const visibleTodos =  useMemo(() => {
+  //   return page * 555 * 60
+  // }, [page])
 
   return (
     <StyledUsers>
@@ -34,23 +58,23 @@ export default function Users() {
       <div className='user'>USER</div>
       {/* <Button type='link'>Button</Button> */}
       <Steps
-    current={1}
-    status="process"
-    items={[
-      {
-        title: 'Finished',
-        description,
-      },
-      {
-        title: 'In Process',
-        description,
-      },
-      {
-        title: 'Waiting',
-        description,
-      },
-    ]}
-  />
+        current={1}
+        status="process"
+        items={[
+          {
+            title: 'Finished',
+            description,
+          },
+          {
+            title: 'In Process',
+            description,
+          },
+          {
+            title: 'Waiting',
+            description,
+          },
+        ]}
+      />
       <Button
         type="primary"
         icon={<PoweroffOutlined />}
@@ -58,10 +82,20 @@ export default function Users() {
         onClick={getUsers}
         size='small'
         className='square'
+        ref={firstButton}
       >
         Get Users
       </Button>
-      <Divider />
+      <Button
+        type="primary"
+        icon={<HomeOutlined />}
+        onClick={onGoHomeClick}
+        size='large'
+        shape='round'
+      >
+        Go Home
+      </Button>
+      {/* <Divider />
       <Button
         type="primary"
         icon={<PoweroffOutlined />}
@@ -89,7 +123,7 @@ export default function Users() {
         onClick={getUsers}
       >
         Get Users
-      </Button>
+      </Button> */}
       {/* <Button
           type="primary"
           icon={<PoweroffOutlined  />}
@@ -98,9 +132,14 @@ export default function Users() {
         >
           Click me!
         </Button> */}
+      {/* {
+        users.slice((page - 1) * pageSize, page * pageSize).map(user => {
+          return <div key={user.id}><Link to={`${user.id}`}>{user.name}</Link></div>
+        })
+      } */}
       {
         users.slice((page - 1) * pageSize, page * pageSize).map(user => {
-          return <p key={user.id}>{user.name}</p>
+          return <div key={user.id}><Link to={`/about/${user.id}`}>{user.name}</Link></div>
         })
       }
       {

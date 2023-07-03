@@ -1,8 +1,12 @@
-import { Col, Layout, Space } from 'antd';
+import { Col, Layout, Menu, Space } from 'antd';
 import './App.css';
 import Users from './components/Users';
 import styles from './styles/app.module.scss'
 import { Content, Footer, Header } from 'antd/es/layout/layout';
+import { Link, Route, Routes } from 'react-router-dom';
+import User from './components/User';
+import About from './components/About';
+import RouterComponent from './RouterComponent';
 
 function App() {
   const headerStyle = {
@@ -11,13 +15,13 @@ function App() {
     height: 64,
     paddingInline: 50,
     lineHeight: '64px',
-    backgroundColor: '#7dbcea',
+    // backgroundColor: '#7dbcea',
   }
   const contentStyle = {
     textAlign: 'center',
     minHeight: 120,
     // lineHeight: '120px',
-    color: '#fff',
+    color: '#000',
     backgroundColor: 'white',
   }
   const footerStyle = {
@@ -25,6 +29,12 @@ function App() {
     color: '#fff',
     backgroundColor: '#7dbcea',
   }
+  const navItems = [
+    'Home',
+    'Users',
+    'Contacts',
+    'About'
+  ]
   return (
     <div className="App">
       <Space
@@ -32,20 +42,28 @@ function App() {
         style={{
           width: '100%',
         }}
-        // size={[0, 48]}
       >
         <Layout>
-          <Header style={headerStyle}>Header</Header>
+          <Header style={headerStyle}>
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              defaultSelectedKeys={['2']}
+              items={navItems.map((item) => {
+                const key = item;
+                return {
+                  key,
+                  label: <Link to={item.toLowerCase()}>{item}</Link>,
+                };
+              })}
+            />
+          </Header>
           <Content style={contentStyle} >
-
-            <Users />
+            <RouterComponent />
           </Content>
           <Footer style={footerStyle}>Footer</Footer>
         </Layout>
       </Space>
-      {/* <header className={styles.header}>Best React App
-        <Col span={8} className={styles['col-8']}>col-8</Col></header>
-      <footer className={styles.footer}>Footer</footer> */}
     </div>
   );
 }
